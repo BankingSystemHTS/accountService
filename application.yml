@@ -1,0 +1,17 @@
+server:
+   port: 8082
+
+spring:
+   datasource:
+      #use the same db user as auth service
+      url: jdbc:mysql://localhost:3306/account_service_db
+      username: authuser
+      password: chenhaotian
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+   jpa:
+      hibernate:
+         ddl-auto: update
+      show-sql: true
+
+
