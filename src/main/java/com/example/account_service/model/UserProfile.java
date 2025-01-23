@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.account_service.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

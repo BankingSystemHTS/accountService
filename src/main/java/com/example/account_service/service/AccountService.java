@@ -1,12 +1,12 @@
-package com.example.service;
+package com.example.account_service.service;
 
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.repository.UserProfileRepos;
-import com.example.model.UserProfile;
+import com.example.account_service.model.UserProfile;
+import com.example.account_service.repository.UserProfileRepos;
 @Service
 public class AccountService {
    @Autowired
