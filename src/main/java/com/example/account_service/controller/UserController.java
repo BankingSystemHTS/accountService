@@ -24,7 +24,7 @@ public class UserController {
       return ResponseEntity.ok(user);
    }
 
-   @PostMapping
+   @PostMapping("/create")
    public String createUser(@RequestBody UserProfile userProfile) {
       // call service and repo to create user in database
       accountService.createUser(userProfile);
