@@ -22,7 +22,7 @@ public class UserProfile {
    private String phoneNumber;
    
    @Column(nullable = false, unique = true)
-   private Long userId; // user id from auth service
+   private Long userId; // user id from Auth_Service
    //auth service register new user and notify account service to create user profile
    
 }
