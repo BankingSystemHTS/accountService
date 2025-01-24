@@ -29,4 +29,21 @@ public class AccountService {
       }
       return userProfileRepos.save(userProfile);
    }
+
+   @Transactional
+   public UserProfile updateUser(Long id, UserProfile userProfile) {
+      //findById() returns an Optional object
+      //orElseThrow() is called directly on the Optional object
+      //return user profile if found
+      UserProfile user = userProfileRepos.findById(id)
+            .orElseThrow(() -> new RuntimeException("User profile not found"));
+      
+      user.setFirstName(userProfile.getFirstName());
+      user.setLastName(userProfile.getLastName());
+      user.setEmail(userProfile.getEmail());
+      user.setPhoneNumber(userProfile.getPhoneNumber());
+      
+      //save the updated user profile
+      return userProfileRepos.save(user);      
+   }
 }

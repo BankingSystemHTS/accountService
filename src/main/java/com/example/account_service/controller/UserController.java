@@ -26,9 +26,17 @@ public class UserController {
 
    @PostMapping("/create")
    public ResponseEntity<String> createUser(@RequestBody UserProfile userProfile) {
-      
+
       accountService.createUser(userProfile);
       return ResponseEntity.ok("User created successfully");
+   }
+   
+   @PutMapping("/update/{id}")
+   public ResponseEntity<String> updateUser(
+         @PathVariable Long id,
+         @RequestBody UserProfile userProfile) {
+      accountService.updateUser(id, userProfile);
+      return ResponseEntity.ok("User updated successfully");
    }
 
 }
