@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.account_service.model.UserProfile;
 import com.example.account_service.repository.UserProfileRepos;
+import com.example.exception.service_exception.UserAlreadyExistsException;
 
 import jakarta.transaction.Transactional;
 @Service
@@ -24,7 +25,7 @@ public class AccountService {
    public UserProfile createUser(UserProfile userProfile) {
       Optional<UserProfile> userProfileOpt = userProfileRepos.findByEmail(userProfile.getEmail());
       if (userProfileOpt.isPresent()) {
-         throw new RuntimeException("User already exists");
+         throw new UserAlreadyExistsException("User already exists");
       }
       return userProfileRepos.save(userProfile);
    }
