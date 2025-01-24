@@ -37,13 +37,21 @@ public class AccountService {
       //return user profile if found
       UserProfile user = userProfileRepos.findById(id)
             .orElseThrow(() -> new RuntimeException("User profile not found"));
-      
+
       user.setFirstName(userProfile.getFirstName());
       user.setLastName(userProfile.getLastName());
       user.setEmail(userProfile.getEmail());
       user.setPhoneNumber(userProfile.getPhoneNumber());
-      
+
       //save the updated user profile
-      return userProfileRepos.save(user);      
+      return userProfileRepos.save(user);
+   }
+   
+   @Transactional
+   public void deleteUser(Long id) {
+      if (!userProfileRepos.existsById(id)) {
+         throw new RuntimeException("User profile not found");
+      }
+      userProfileRepos.deleteById(id);
    }
 }
