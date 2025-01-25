@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.account_service.model.UserProfile;
 import com.example.account_service.repository.UserProfileRepos;
 import com.example.exception.service_exception.UserAlreadyExistsException;
+import com.example.exception.service_exception.UserNotFoundException;
 
 import jakarta.transaction.Transactional;
 @Service
@@ -50,7 +51,7 @@ public class AccountService {
    @Transactional
    public void deleteUser(Long id) {
       if (!userProfileRepos.existsById(id)) {
-         throw new RuntimeException("User profile not found");
+         throw new UserNotFoundException("User profile not found");
       }
       userProfileRepos.deleteById(id);
    }
