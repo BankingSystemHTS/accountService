@@ -32,6 +32,12 @@ public class UserController {
       return ResponseEntity.ok(user);
    }
 
+   @GetMapping("/paginated")
+   public ResponseEntity<List<UserProfile>> getPaginatedUser(@RequestParam int page, @RequestParam int size) {
+      List<UserProfile> users = accountService.getPaginatedUser(page, size);
+      return ResponseEntity.ok(users);
+   }
+
    @PostMapping("/create")
    public ResponseEntity<String> createUser(@RequestBody UserProfile userProfile) {
 
