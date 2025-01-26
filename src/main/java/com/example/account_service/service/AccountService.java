@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.account_service.model.UserProfile;
 import com.example.account_service.repository.UserProfileRepos;
+import com.example.exception.service_exception.ResourceNotFoundException;
 import com.example.exception.service_exception.UserAlreadyExistsException;
 import com.example.exception.service_exception.UserNotFoundException;
 
@@ -58,6 +59,10 @@ public class AccountService {
    }
 
    public List<UserProfile> getAllUsers() {
-      return userProfileRepos.findAll();
+      List<UserProfile> users = userProfileRepos.findAll();
+      if (users.isEmpty()) {
+         throw new ResourceNotFoundException("No users found");
+      }
+      return users;
    }
 }

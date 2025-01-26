@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.example.exception.service_exception.ResourceNotFoundException;
 import com.example.exception.service_exception.UserAlreadyExistsException;
 import com.example.exception.service_exception.UserNotFoundException;
 
@@ -17,8 +18,13 @@ public class GlobalExceptionHandler {
    }
 
    @ExceptionHandler(UserNotFoundException.class)
-   public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e){
+   public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
       return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+   }
+   
+   @ExceptionHandler(ResourceNotFoundException.class)
+   public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
+      return ResponseEntity.noContent().build();
    }
 
    @ExceptionHandler(RuntimeException.class)

@@ -26,6 +26,12 @@ public class UserController {
       return ResponseEntity.ok(user);
    }
 
+   @GetMapping("/getByEmail/{email}")
+   public ResponseEntity<UserProfile> getUserByEmail(@PathVariable String email) {
+      UserProfile user = accountService.getByEmail(email);
+      return ResponseEntity.ok(user);
+   }
+
    @PostMapping("/create")
    public ResponseEntity<String> createUser(@RequestBody UserProfile userProfile) {
 
@@ -50,9 +56,6 @@ public class UserController {
    @GetMapping("/all")
    public ResponseEntity<List<UserProfile>> getAllUsers() {
       List<UserProfile> users = accountService.getAllUsers();
-      if (users.isEmpty()) {
-         return ResponseEntity.noContent().build();
-      }
       return ResponseEntity.ok(users);
    }
 
