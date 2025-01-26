@@ -1,5 +1,7 @@
 package com.example.account_service.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +45,16 @@ public class UserController {
    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
       accountService.deleteUser(id);
       return ResponseEntity.ok("User deleted successfully");
-   } 
+   }
+
+   @GetMapping("/all")
+   public ResponseEntity<List<UserProfile>> getAllUsers() {
+      List<UserProfile> users = accountService.getAllUsers();
+      if (users.isEmpty()) {
+         return ResponseEntity.noContent().build();
+      }
+      return ResponseEntity.ok(users);
+   }
 
 
 }

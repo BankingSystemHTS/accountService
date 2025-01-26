@@ -1,5 +1,6 @@
 package com.example.account_service.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,9 @@ public class AccountService {
          throw new UserNotFoundException("User profile not found");
       }
       userProfileRepos.deleteById(id);
+   }
+
+   public List<UserProfile> getAllUsers() {
+      return userProfileRepos.findAll();
    }
 }
