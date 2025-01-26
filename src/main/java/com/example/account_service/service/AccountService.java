@@ -23,6 +23,12 @@ public class AccountService {
 
       return userProfileOpt.orElseThrow(() -> new RuntimeException("User profile not found"));
    }
+
+   public UserProfile getByEmail(String email) {
+      UserProfile user = userProfileRepos.findByEmail(email)
+            .orElseThrow(() -> new UserNotFoundException("User Profile Not Found"));
+      return user;
+   }
    
    @Transactional
    public UserProfile createUser(UserProfile userProfile) {
