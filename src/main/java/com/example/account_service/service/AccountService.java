@@ -24,7 +24,7 @@ public class AccountService {
    public UserProfile getUserById(Long id) {
       Optional<UserProfile> userProfileOpt = userProfileRepos.findById(id);
 
-      return userProfileOpt.orElseThrow(() -> new RuntimeException("User profile not found"));
+      return userProfileOpt.orElseThrow(() -> new UserNotFoundException("User profile not found"));
    }
 
    public UserProfile getByEmail(String email) {
