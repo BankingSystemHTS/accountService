@@ -3,16 +3,23 @@ package com.example.account_service.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.example.account_service.model.UserProfile;
 import com.example.account_service.repository.UserProfileRepos;
@@ -30,6 +37,8 @@ public class AccountServiceTest {
    private AccountService accountService;
 
    private UserProfile mockUser;
+   private UserProfile mockUser2;
+   private List<UserProfile> mockUsers;
    
    @BeforeEach
    void setUp() {
@@ -39,6 +48,12 @@ public class AccountServiceTest {
       mockUser.setFirstName("John");
       mockUser.setLastName("Doe");
       mockUser.setPhoneNumber("123123123");
+
+      mockUser2 = new UserProfile();
+      mockUser2.setId(2L);
+      mockUser2.setEmail("test2@gmail.com");
+
+      mockUsers = Arrays.asList(mockUser, mockUser2);
    }
    @Test
    void testGetUserById_Success() {
@@ -67,5 +82,45 @@ public class AccountServiceTest {
    void testGetUserByEmail_NotFound() {
       when(userProfileRepos.findByEmail("notfound@gmail.com")).thenReturn(Optional.empty());
       assertThrows(UserNotFoundException.class, () -> accountService.getByEmail("notfound@gmail.com"));
+   }
+
+   @Test
+   void testGetPaginatedUser_Success() {
+      int page = 0;
+      int size = 2;
+      Pageable pageable = PageRequest.of(page, size);
+
+      Page<UserProfile> mockPage = new PageImpl<>(mockUsers, pageable, mockUsers.size());
+      when(userProfileRepos.findAll(pageable)).thenReturn(mockPage);
+
+      //Act
+      List<UserProfile> resultPage = accountService.getPaginatedUser(page, size);
+
+      //Assert
+      assertNotNull(resultPage);
+      assertEquals(2, resultPage.size());
+      assertEquals("test@gmail.com", resultPage.get(0).getEmail());
+
+      verify(userProfileRepos, times(1)).findAll(pageable);
+   }
+   
+   @Test
+   void testGetPaginatedUser_EmptyResult() {
+      int page = 0;
+      int size = 2;
+      Pageable pageable = PageRequest.of(page, size);
+      Page<UserProfile> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+
+      when(userProfileRepos.findAll(pageable)).thenReturn(emptyPage);
+
+      //Act
+      List<UserProfile> resultPage = accountService.getPaginatedUser(page, size);
+
+      //Assert
+      assertNotNull(resultPage);
+      assertTrue(resultPage.isEmpty());
+
+      //Verify that findALl was called with correct arguments
+      verify(userProfileRepos, times(1)).findAll(pageable);
    }
 }
