@@ -62,4 +62,10 @@ public class AccountServiceTest {
       assertNotNull(user);
       assertEquals(mockUser.getId(), user.getId());
    }
+
+   @Test
+   void testGetUserByEmail_NotFound() {
+      when(userProfileRepos.findByEmail("notfound@gmail.com")).thenReturn(Optional.empty());
+      assertThrows(UserNotFoundException.class, () -> accountService.getByEmail("notfound@gmail.com"));
+   }
 }
