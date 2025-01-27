@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.account_service.model.UserProfile;
 import com.example.account_service.repository.UserProfileRepos;
+import com.example.exception.service_exception.UserAlreadyExistsException;
 import com.example.exception.service_exception.UserNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -122,5 +123,28 @@ public class AccountServiceTest {
 
       //Verify that findALl was called with correct arguments
       verify(userProfileRepos, times(1)).findAll(pageable);
+   }
+
+   @Test
+   void testCreateUser_Success() {
+      when(userProfileRepos.findByEmail("test@gmail.com")).thenReturn(Optional.empty());
+      when(userProfileRepos.save(mockUser)).thenReturn(mockUser);
+      //Act
+      UserProfile user = accountService.createUser(mockUser);
+      //Assert
+      assertNotNull(user);
+      assertEquals(mockUser.getEmail(), user.getEmail());
+      //verify findByEmail was called with correct arguments
+      verify(userProfileRepos, times(1)).findByEmail("test@gmail.com");
+      verify(userProfileRepos, times(1)).save(mockUser);
+   }
+
+   @Test 
+   void testCreateUser_UserExist(){
+      when(userProfileRepos.findByEmail("test@gmail.com")).thenReturn(Optional.of(mockUser));
+      //Assert
+      assertThrows(UserAlreadyExistsException.class, () -> accountService.createUser(mockUser));
+      //Verify
+      verify(userProfileRepos, never()).save(any(UserProfile.class));
    }
 }
