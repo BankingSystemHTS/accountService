@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,12 +29,19 @@ public class AccountServiceTest {
    @InjectMocks
    private AccountService accountService;
 
-   @Test
-   void testGetUserById_Success() {
-      UserProfile mockUser = new UserProfile();
+   private UserProfile mockUser;
+   
+   @BeforeEach
+   void setUp() {
+      mockUser = new UserProfile();
       mockUser.setId(1L);
       mockUser.setEmail("test@gmail.com");
-
+      mockUser.setFirstName("John");
+      mockUser.setLastName("Doe");
+      mockUser.setPhoneNumber("123123123");
+   }
+   @Test
+   void testGetUserById_Success() {
       when(userProfileRepos.findById(1L)).thenReturn(Optional.of(mockUser));
       UserProfile user = accountService.getUserById(1L);
 
@@ -49,10 +57,6 @@ public class AccountServiceTest {
 
    @Test
    void testGetUserByEmail_Success() {
-      UserProfile mockUser = new UserProfile();
-      mockUser.setId(1L);
-      mockUser.setEmail("test@gmail.com");
-      
       when(userProfileRepos.findByEmail("test@gmail.com")).thenReturn(Optional.of(mockUser));
       UserProfile user = accountService.getByEmail("test@gmail.com");
       assertNotNull(user);
