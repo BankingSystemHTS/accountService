@@ -1,5 +1,6 @@
 package com.example.account_service.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -15,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,6 +57,19 @@ public class UserControllerUnitTest {
       mockUsers = Arrays.asList(mockUser, mockUser2);
    }
 
+   //refactor repeated json validation for UserProfile
+   private void assertUserProfileJson(String json) throws Exception{
+      //parse json string into Java object for comparison
+      ObjectMapper objectMapper = new ObjectMapper();
+      UserProfile user = objectMapper.readValue(json, UserProfile.class);
+      
+      assertEquals(mockUser.getId(), user.getId());
+      assertEquals(mockUser.getEmail(), user.getEmail());
+      assertEquals(mockUser.getFirstName(), user.getFirstName());
+      assertEquals(mockUser.getLastName(), user.getLastName());
+      assertEquals(mockUser.getPhoneNumber(), user.getPhoneNumber());
+   }
+
    /* 
       Test Case 1: Success Scenario
       Ensures that retrieving a using by a valid ID returns the correct user profile
@@ -63,15 +79,13 @@ public class UserControllerUnitTest {
    void testGetUserById_Success() throws Exception {
       when(accountService.getUserById(1L)).thenReturn(mockUser);
       //Act & Assert
-      mockMvc.perform(get("/api/user/1"))
+      MvcResult mvcResult = mockMvc.perform(get("/api/user/1"))
          .andExpect(status().isOk())
          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-         .andExpect(jsonPath("$.id").value(1L))
-         .andExpect(jsonPath("$.email").value("test@gmail.com"))
-         .andExpect(jsonPath("$.firstName").value("John"))
-         .andExpect(jsonPath("$.lastName").value("Doe"))
-         .andExpect(jsonPath("$.phoneNumber").value("123123123"));
-         
+         .andReturn();
+      
+      String responseBody = mvcResult.getResponse().getContentAsString();
+      assertUserProfileJson(responseBody);
       verify(accountService, times(1)).getUserById(1L);
    }
 
@@ -83,5 +97,17 @@ public class UserControllerUnitTest {
       //Act & Assert
       mockMvc.perform(get("/api/user/1"))
             .andExpect(status().isBadRequest());
+      verify(accountService, times(1)).getUserById(1L);
    }
+
+   // @Test
+   // void testGetByEmail_Success() throws Exception {
+   //    when(accountService.getByEmail("test@gmail.com")).thenReturn(mockUser);
+
+   //    //Act & Assert
+   //    mockMvc.perform(get("/api/user/test@gmail.com"))
+   //    .andExpect(status().isOk())
+   //    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+   //    .andExpect(jsonPath($.id))
+   // }
 }
