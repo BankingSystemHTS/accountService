@@ -60,7 +60,7 @@ public class UserControllerUnitTest {
    //refactor repeated json validation for UserProfile
    private void assertUserProfileJson(String json) throws Exception{
       //parse json string into Java object for comparison
-      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper = new ObjectMapper();
       UserProfile user = objectMapper.readValue(json, UserProfile.class);
       
       assertEquals(mockUser.getId(), user.getId());
@@ -100,14 +100,26 @@ public class UserControllerUnitTest {
       verify(accountService, times(1)).getUserById(1L);
    }
 
-   // @Test
-   // void testGetByEmail_Success() throws Exception {
-   //    when(accountService.getByEmail("test@gmail.com")).thenReturn(mockUser);
+   @Test
+   void testGetByEmail_Success() throws Exception {
+      when(accountService.getByEmail(mockUser.getEmail())).thenReturn(mockUser);
 
-   //    //Act & Assert
-   //    mockMvc.perform(get("/api/user/test@gmail.com"))
-   //    .andExpect(status().isOk())
-   //    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-   //    .andExpect(jsonPath($.id))
-   // }
+      //Act & Assert
+      MvcResult result = mockMvc.perform(get("/api/user/getByEmail/test@gmail.com"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn();
+      String responseBody = result.getResponse().getContentAsString();
+      assertUserProfileJson(responseBody);
+      verify(accountService, times(1)).getByEmail(mockUser.getEmail());
+   }
+   
+   @Test
+   void testGetByEmail_NotFound() throws Exception {
+      when(accountService.getByEmail("notFound@gmail.com"))
+            .thenThrow(new UserNotFoundException("User Email Not Found"));
+      mockMvc.perform(get("/api/user/getByEmail/notFound@gmail.com"))
+            .andExpect(status().isBadRequest());
+      verify(accountService, times(1)).getByEmail("notFound@gmail.com");
+   }
 }
