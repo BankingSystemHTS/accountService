@@ -26,6 +26,7 @@ import com.example.account_service.service.AccountService;
 import com.example.exception.service_exception.UserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 @WebMvcTest
 @WithMockUser
 public class UserControllerUnitTest {
@@ -121,5 +122,23 @@ public class UserControllerUnitTest {
       mockMvc.perform(get("/api/user/getByEmail/notFound@gmail.com"))
             .andExpect(status().isBadRequest());
       verify(accountService, times(1)).getByEmail("notFound@gmail.com");
+   }
+
+   @Test
+   void testGetPaginatedUser() throws Exception {
+      int page = 0;
+      int size = 2;
+      when(accountService.getPaginatedUser(page, size)).thenReturn(mockUsers);
+      //act & assert
+      mockMvc.perform(get("/api/user/paginated")
+      .param("page", String.valueOf(page))
+      .param("size", String.valueOf(size)))
+      .andExpect(status().isOk())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.size()").value(2))
+      .andExpect(jsonPath("$[0].email").value(mockUser.getEmail()))
+      .andExpect(jsonPath("$[1].email").value(mockUser2.getEmail()));
+      
+      verify(accountService, times(1)).getPaginatedUser(page, size);
    }
 }
