@@ -140,11 +140,50 @@ public class AccountServiceTest {
    }
 
    @Test 
-   void testCreateUser_UserExist(){
+   void testCreateUser_UserExist() {
       when(userProfileRepos.findByEmail("test@gmail.com")).thenReturn(Optional.of(mockUser));
       //Assert
       assertThrows(UserAlreadyExistsException.class, () -> accountService.createUser(mockUser));
       //Verify
       verify(userProfileRepos, never()).save(any(UserProfile.class));
+   }
+
+   @Test
+   void testUpdateUser_Success() {
+      //user updates mockUser
+      UserProfile userInput = new UserProfile();
+      userInput.setFirstName("Nathan");
+      userInput.setLastName("Chan");
+      userInput.setEmail("nathan@gamil.com");
+      userInput.setPhoneNumber("6693361086");
+
+      when(userProfileRepos.findById(1L)).thenReturn(Optional.of(mockUser));
+      when(userProfileRepos.save(mockUser)).thenReturn(mockUser);
+      //Act
+      UserProfile updatedUser = accountService.updateUser(1L, userInput);
+
+      //Assert
+      assertNotNull(updatedUser);
+
+      // assertEquals(userInput, updatedUser);
+      assertEquals(userInput.getFirstName(), updatedUser.getFirstName());
+      assertEquals(userInput.getLastName(), updatedUser.getLastName());
+      assertEquals(userInput.getEmail(), updatedUser.getEmail());
+      assertEquals(userInput.getPhoneNumber(), updatedUser.getPhoneNumber());
+
+      verify(userProfileRepos, times(1)).findById(1L);
+      verify(userProfileRepos, times(1)).save(updatedUser);
+
+   }
+
+   @Test
+   void testUpdateUser_NotFound() {
+      //test the case when user id not found
+      when(userProfileRepos.findById(2L)).thenReturn(Optional.empty());
+      //Assert
+      assertThrows(UserNotFoundException.class,
+            () -> accountService.updateUser(2L, mockUser));
+
+      verify(userProfileRepos, times(1)).findById(2L);
    }
 }

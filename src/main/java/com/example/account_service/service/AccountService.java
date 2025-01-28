@@ -54,7 +54,7 @@ public class AccountService {
       //orElseThrow() is called directly on the Optional object
       //return user profile if found
       UserProfile user = userProfileRepos.findById(id)
-            .orElseThrow(() -> new RuntimeException("User profile not found"));
+            .orElseThrow(() -> new UserNotFoundException("User profile not found"));
 
       user.setFirstName(userProfile.getFirstName());
       user.setLastName(userProfile.getLastName());
