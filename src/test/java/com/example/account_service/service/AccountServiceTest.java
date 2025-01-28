@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.account_service.model.UserProfile;
 import com.example.account_service.repository.UserProfileRepos;
+import com.example.exception.service_exception.ResourceNotFoundException;
 import com.example.exception.service_exception.UserAlreadyExistsException;
 import com.example.exception.service_exception.UserNotFoundException;
 
@@ -206,6 +207,26 @@ public class AccountServiceTest {
       assertThrows(UserNotFoundException.class,
             () -> accountService.deleteUser(1L));
       verify(userProfileRepos, times(1)).existsById(1L);
-      verify(userProfileRepos, never()).deleteById(1L);  
+      verify(userProfileRepos, never()).deleteById(1L);
+   }
+   
+   @Test
+   void testGetAllUsers_Success() {
+      when(userProfileRepos.findAll()).thenReturn(mockUsers);
+      //Act
+      List<UserProfile> users = accountService.getAllUsers();
+      //assert
+      assertNotNull(users);
+      assertEquals(2, users.size());
+      verify(userProfileRepos, times(1)).findAll();
+   }
+
+   @Test
+   void testGetAllUsers_Empty() {
+      List<UserProfile> users = Arrays.asList();
+      when(userProfileRepos.findAll()).thenReturn(users);
+      assertThrows(ResourceNotFoundException.class,
+            () -> accountService.getAllUsers());
+      verify(userProfileRepos, times(1)).findAll();
    }
 }
