@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Null;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -185,5 +186,26 @@ public class AccountServiceTest {
             () -> accountService.updateUser(2L, mockUser));
 
       verify(userProfileRepos, times(1)).findById(2L);
+   }
+
+   @Test
+   void testDeleteUser_Success() {
+      when(userProfileRepos.existsById(1L)).thenReturn(true);
+      doNothing().when(userProfileRepos).deleteById(1L);
+      //Act
+      accountService.deleteUser(1L);
+
+      verify(userProfileRepos, times(1)).existsById(1L);
+      verify(userProfileRepos, times(1)).deleteById(1L);
+   }
+
+   @Test
+   void testDelete_NotFound() {
+      when(userProfileRepos.existsById(1L)).thenReturn(false);
+
+      assertThrows(UserNotFoundException.class,
+            () -> accountService.deleteUser(1L));
+      verify(userProfileRepos, times(1)).existsById(1L);
+      verify(userProfileRepos, never()).deleteById(1L);  
    }
 }
