@@ -13,6 +13,16 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: account_db
+          MYSQL_USER: authuser
+          MYSQL_PASSWORD: chenhaotian
+        ports:
+        - 3306: 3306
 
     steps:
       - name: Checkout Repository
