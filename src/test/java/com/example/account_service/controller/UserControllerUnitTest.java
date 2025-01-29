@@ -203,7 +203,7 @@ public class UserControllerUnitTest {
       UserProfile userNotExist = new UserProfile();
       when(accountService.updateUser(5L, userNotExist))
             .thenThrow(new UserNotFoundException("User profile not found"));
-      // Act & Expect     
+      // Act & Expect
       mockMvc.perform(put("/api/user/update/5")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(userNotExist))
@@ -213,4 +213,29 @@ public class UserControllerUnitTest {
 
       verify(accountService, times(1)).updateUser(5L, userNotExist);
    }
+
+   @Test
+   void testDeleteUser_Success() throws Exception {
+      doNothing().when(accountService).deleteUser(1L);
+      mockMvc.perform(delete("/api/user/delete/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(content().string("User deleted successfully"));
+      verify(accountService, times(1)).deleteUser(1L);
+   }
+
+   @Test
+   void testDeleteUser_NotFound() throws Exception {
+      doThrow(new UserNotFoundException("User profile not found"))
+            .when(accountService).deleteUser(5L);
+
+      mockMvc.perform(delete("/api/user/delete/5")
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(csrf()))
+            .andExpect(status().isBadRequest());
+
+      verify(accountService, times(1)).deleteUser(5L);
+   }
+   
 }
