@@ -14,12 +14,12 @@ public class GlobalExceptionHandler {
    
    @ExceptionHandler(UserAlreadyExistsException.class)
    public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
-      return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+      return ResponseEntity.badRequest().body(e.getMessage());
    }
 
    @ExceptionHandler(UserNotFoundException.class)
    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
-      return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+      return ResponseEntity.badRequest().body(e.getMessage());
    }
    
    @ExceptionHandler(ResourceNotFoundException.class)
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
    @ExceptionHandler(RuntimeException.class)
    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
-      return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+      return ResponseEntity.badRequest().body(e.getMessage());
    }
    @ExceptionHandler(Exception.class)
    public ResponseEntity<String> handleException(Exception e) {

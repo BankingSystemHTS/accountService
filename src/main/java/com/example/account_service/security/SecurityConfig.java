@@ -16,8 +16,8 @@ public class SecurityConfig {
          .authorizeHttpRequests((requests) -> requests
             .requestMatchers("/api/user/**").permitAll() //reuqire authentication for /api/user/**   
             .anyRequest().permitAll() //permit all other requests
-         )
-            .csrf().disable();
+            );
+         
          
       return http.build();
 
