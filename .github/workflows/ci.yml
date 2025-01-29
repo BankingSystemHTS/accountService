@@ -42,7 +42,7 @@ jobs:
           restore-keys: ${{ runner.os }}-maven
 
       - name: Wait for Mysql to Start
-        run: sleep 15
+        run: sleep 16
 
       - name: Build and Run Tests
         run: mvn clean verify
