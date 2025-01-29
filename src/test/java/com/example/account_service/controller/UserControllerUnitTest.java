@@ -237,5 +237,18 @@ public class UserControllerUnitTest {
 
       verify(accountService, times(1)).deleteUser(5L);
    }
-   
+
+   @Test
+   void testGetAllUsers() throws Exception {
+      when(accountService.getAllUsers()).thenReturn(mockUsers);
+      mockMvc.perform(get("/api/user/all")
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.size()").value(2))
+            .andExpect(jsonPath("$[0].firstName").value(mockUser.getFirstName()))
+            .andExpect(jsonPath("$[1].firstName").value(mockUser2.getFirstName()));
+      verify(accountService, times(1)).getAllUsers();
+   }
+
 }
