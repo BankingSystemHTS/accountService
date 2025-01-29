@@ -22,7 +22,7 @@ jobs:
           MYSQL_USER: authuser
           MYSQL_PASSWORD: chenhaotian
         ports:
-        - 3306: 3306
+          - 3306:3306
 
     steps:
       - name: Checkout Repository
@@ -40,6 +40,9 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven
+
+      - name: Wait for Mysql to Start
+        run: sleep 15
 
       - name: Build and Run Tests
         run: mvn clean verify
