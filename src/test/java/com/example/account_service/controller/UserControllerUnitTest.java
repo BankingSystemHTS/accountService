@@ -174,4 +174,43 @@ public class UserControllerUnitTest {
             .andExpect(content().string("User already exists"));
       verify(accountService, times(1)).createUser(mockUser);
    }
+
+   @Test
+   void testUpdateUser_Success() throws Exception {
+      UserProfile updatedProfile = new UserProfile();
+      updatedProfile.setId(1L);
+      updatedProfile.setEmail("test2@gmail.com");
+      updatedProfile.setFirstName("John2");
+      updatedProfile.setLastName("Doe2");
+      updatedProfile.setPhoneNumber("11");
+      updatedProfile.setUserId(2L);
+
+      when(accountService.updateUser(1L, updatedProfile)).thenReturn(updatedProfile);
+
+      // Act
+      mockMvc.perform(put("/api/user/update/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updatedProfile))
+            .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(content().string("User updated successfully"))
+            .andReturn();
+      verify(accountService, times(1)).updateUser(1L, updatedProfile);
+   }
+
+   @Test
+   void testUpdateUser_NotFound() throws Exception {
+      UserProfile userNotExist = new UserProfile();
+      when(accountService.updateUser(5L, userNotExist))
+            .thenThrow(new UserNotFoundException("User profile not found"));
+      // Act & Expect     
+      mockMvc.perform(put("/api/user/update/5")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(userNotExist))
+            .with(csrf()))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("User profile not found"));
+
+      verify(accountService, times(1)).updateUser(5L, userNotExist);
+   }
 }
