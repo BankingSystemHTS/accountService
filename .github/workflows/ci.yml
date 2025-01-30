@@ -102,4 +102,5 @@ jobs:
           docker rm account-service || true
           docker pull nathanchan109/account-service:latest
           docker run -d --restart always -p 8082:8082 --name account-service nathanchan109/account-service
+          docker image prune -a -f #clean old image
           EOF
