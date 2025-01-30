@@ -71,7 +71,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -93,9 +92,9 @@ jobs:
       - name: Push Docker Image to Docker Hub
         run: docker push nathanchan109/account-service:latest
 
-       - name: Deploy to EC2
-      run: |
-        ssh -i account-service-key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} <<EOF
+      - name: Deploy to EC2
+        run: |
+          ssh -i account-service-key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} <<EOF
 docker stop account-service || true
 docker rm account-service || true
 docker pull nathanchan109/account-service:latest
