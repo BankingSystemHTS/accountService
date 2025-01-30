@@ -41,9 +41,14 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven
 
-      - name: Wait for Mysql to Start
-        run: sleep 16
-        
+      - name: Wait for MySQL to Start
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          until mysqladmin ping -h 127.0.0.1 --silent; do
+            echo "Waiting for database..."
+            sleep 3
+          done
+
       - name: Build and Run Tests
         env:
           MYSQL_HOST: 127.0.0.1
