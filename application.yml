@@ -1,9 +1,11 @@
+#use mysql in dev and deploy env
 server:
    port: 8082
 
 spring:
    datasource:
       #use the same db user as auth service
+      #refrences env from github action workflow
       url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:3306/account_db
       username: ${MYSQL_USER:authuser}
       password: ${MYSQL_PASSWORD:chenhaotian}
@@ -19,6 +21,7 @@ logging:
   level:
     org:
       springframework:
-        security: DEBUG
+        security:
+            enabled: false
 
 

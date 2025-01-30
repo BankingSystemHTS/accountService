@@ -12,6 +12,7 @@ on:
 
 jobs:
   test:
+    #only in test job: connect to mysql
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -57,7 +58,9 @@ jobs:
 
       - name: Build and Run Tests
         env:
-          MYSQL_HOST: 127.0.0.1
+          #referencing action runner, *use 127.0 instead of localhost
+          #env pass to mvn builder, and to application.yml file
+          MYSQL_HOST: 127.0.0.1 
           MYSQL_USER: authuser
           MYSQL_PASSWORD: chenhaotian
         run: mvn clean verify
