@@ -43,11 +43,10 @@ jobs:
 
       - name: Wait for Mysql to Start
         run: sleep 16
+        
       - name: Build and Run Tests
         env:
           MYSQL_HOST: 127.0.0.1
           MYSQL_USER: authuser
           MYSQL_PASSWORD: chenhaotian
-
-      - name: Build and Run Tests
         run: mvn clean verify
