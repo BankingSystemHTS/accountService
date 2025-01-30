@@ -6,9 +6,9 @@ spring:
    datasource:
       #use the same db user as auth service
       #refrences env from github action workflow
-      url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:3306/account_db
-      username: ${MYSQL_USER:authuser}
-      password: ${MYSQL_PASSWORD:chenhaotian}
+      url: jdbc:mysql://mysql-db:3306/account_db  # Use container name
+      username: authuser
+      password: chenhaotian
       driver-class-name: com.mysql.cj.jdbc.Driver
 
    jpa:
