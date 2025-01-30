@@ -82,7 +82,7 @@ jobs:
           distribution: 'temurin'
       
       - name: Build JAR file
-        uses: mvn clean package -DskipTests #pacakge jar in target/ and skip all test
+        run: mvn clean package -DskipTests #package jar in target/ and skip all test
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
