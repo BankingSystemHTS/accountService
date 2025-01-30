@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline with EC2 Deployment
 
 on: 
   push:
@@ -61,3 +61,29 @@ jobs:
           MYSQL_USER: authuser
           MYSQL_PASSWORD: chenhaotian
         run: mvn clean verify
+    
+  deploy:
+    needs: test  # Only deploy if tests pass
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t nathanchan109/account-service .
+
+      - name: Push Docker Image to Docker Hub
+        run: docker push nathanchan109/account-service:latest
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            docker stop account-service || true
+            docker rm account-service || true
+            docker pull nathanchan109/account-service:latest
+            docker run -d -p 8082:8082 --name account-service nathanchan109/account-service
+          EOF   
