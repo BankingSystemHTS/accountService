@@ -4,7 +4,7 @@ server:
 spring:
    datasource:
       #use the same db user as auth service
-      url: jdbc:mysql://{$MYSQL_HOST:localhost}:3306/account_db
+      url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:3306/account_db
       username: ${MYSQL_USER:authuser}
       password: ${MYSQL_PASSWORD:chenhaotian}
       driver-class-name: com.mysql.cj.jdbc.Driver
