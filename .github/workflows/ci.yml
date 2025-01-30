@@ -104,3 +104,4 @@ jobs:
           docker pull nathanchan109/account-service:latest
           docker run -d -p 8082:8082 --name account-service nathanchan109/account-service
           EOF 
+#
